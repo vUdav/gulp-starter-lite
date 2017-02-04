@@ -1,0 +1,79 @@
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+	outline: none;
+}
+
+html {
+	box-sizing: border-box;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	font-size: @base-font-size;
+	height: 100%;
+}
+
+body {
+	background: @main-bg;
+	margin: 0;
+	font-family: @font-family;
+	font-size: @font-size;
+	color: @text-color;
+	line-height: @line-height;
+	height: 100%;
+}
+
+a {
+	color: @link-color;
+	text-decoration: none;
+	transition: @transition-time color, @transition-time background;
+
+	&:hover,
+	&:focus {
+		color: @link-color--hover;
+	}
+
+	&:before,
+	&:after {
+		transition: @transition-time color, @transition-time background;
+	}
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	vertical-align: middle;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	line-height: @line-height;
+	font-weight: 700;
+	margin: 0;
+	color: @text-color;
+	margin-bottom: 1em;
+}
+h1,
+.h1 {
+	font-size: @font-size--h1;
+}
+h2,
+.h2 {
+	font-size: @font-size--h2;
+}
+h3,
+.h3 {
+	font-size: @font-size--h3;
+}
+h4,
+.h4 {
+	font-size: @font-size--h4;
+}
+h5,
+.h5 {
+	font-size: @font-size--h5;
+}
+
+p {
+	margin-bottom: 10px;
+	margin-top: 10px;
+	line-height: 1.2;
+}

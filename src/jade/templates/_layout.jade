@@ -1,0 +1,16 @@
+doctype
+html(lang="ru")
+
+	block vars
+
+	include _head
+
+	body
+		include ../components/_page-header
+
+		main.main(id='#{page}')
+			block content
+
+		include ../components/_page-footer
+
+		include _footer

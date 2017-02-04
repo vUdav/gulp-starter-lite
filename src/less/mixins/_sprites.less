@@ -1,0 +1,22 @@
+.spriteWidth(@sprite) {
+	width: extract(@sprite, 5);
+}
+
+.spriteHeight(@sprite) {
+	height: extract(@sprite, 6);
+}
+
+.spritePosition(@sprite) {
+	background-position: extract(@sprite, 3) extract(@sprite, 4);
+}
+
+.spriteImage(@sprite) {
+	background-image: extract(@sprite, 9);
+}
+
+.sprite(@sprite) {
+	.spriteImage(@sprite);
+	.spritePosition(@sprite);
+	.spriteWidth(@sprite);
+	.spriteHeight(@sprite);
+}

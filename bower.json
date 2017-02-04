@@ -1,0 +1,19 @@
+{
+	"name": "Butcher",
+	"description": "Butcher landing",
+	"main": "gulpfile.js",
+	"authors": [
+		"Valery Liubimov <v.udav@bk.ru>"
+	],
+	"license": "MIT",
+	"moduleType": [],
+	"homepage": "",
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"bower_components"
+	],
+	"devDependencies": {
+		"normalize-css": "latest"
+	}
+}
