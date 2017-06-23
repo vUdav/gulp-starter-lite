@@ -23,6 +23,9 @@ var gulp = require('gulp'),
 		rigger = require('gulp-rigger'),
 		flatten = require('gulp-flatten'),
 		del = require('del'),
+		svgstore = require('gulp-svgstore'),
+		svgmin = require('gulp-svgmin'),
+		cheerio = require('gulp-cheerio'),
 		runSequence = require('run-sequence').use(gulp);
 
 var path = {
@@ -33,6 +36,7 @@ var path = {
 		pngSprite: 'src/img/sprite/**/*.png',
 		js: 'src/js/**/*.js',
 		fonts: 'src/fonts/**/*',
+		svgSprite: 'src/img/svg-sprite/**/*.svg'
 	},
 	build: {
 		styles: 'dist/css',
@@ -43,6 +47,7 @@ var path = {
 		js: 'dist/js',
 		fonts: 'dist/fonts',
 		clean: 'dist/**/*',
+		svgSprite: 'dist/img/svg',
 	},
 	watch: {
 		less: 'src/less/**/*.less',
@@ -51,6 +56,7 @@ var path = {
 		pngSprite: 'src/img/sprite/**/*.png',
 		js: 'src/js/**/*.*',
 		fonts: 'src/fonts/**/*',
+		svgSprite: 'src/img/svg-sprite/**/*.svg',
 	}
 };
 
@@ -64,8 +70,29 @@ var browserSyncConfig = {
 	port: 9000,
 	injectChanges: true,
 	delay: 100,
-	logPrefix: 'Butcher'
+	logPrefix: 'project'
 };
+
+// SVG sprite
+gulp.task('svg-sprite', function () {
+	return gulp.src(path.src.svgSprite)
+		.pipe(plumber(function(error) {
+			gutil.log(gutil.colors.red(error.message));
+			this.emit('end');
+		}))
+		.pipe(svgmin())
+		.pipe(svgstore())
+		.pipe(cheerio({
+			run: function ($, file) {
+				$('svg').addClass('hide');
+				$('[fill]').removeAttr('fill');
+			},
+			parserOptions: { xmlMode: true }
+		}))
+		.pipe(cached('svg-sprite'))
+		.pipe(gulp.dest(path.build.svgSprite))
+		.pipe(reload({stream: true}));
+});
 
 // LESS
 gulp.task('less', function () {
@@ -120,16 +147,16 @@ gulp.task('img', function () {
 // PNG SPRITES
 gulp.task('png-sprite', function () {
 	var spriteData =
-		gulp.src(path.src.pngSprite) //выберем откуда брать изображения для объединения в спрайт
+		gulp.src(path.src.pngSprite)
 			.pipe(spritesmith({
 				padding: 1,
-				imgName: 'sprite.png', //имя спрайтового изображения
-				cssName: '_sprite-position.less', //имя стиля где храним позиции изображений в спрайте
-				imgPath: '../img/sprite.png', //путь где лежит спрайт
-				cssFormat: 'less', //формат в котором обрабатываем позиции
-				cssTemplate: 'template.mustache', //файл маски
+				imgName: 'sprite.png',
+				cssName: '_sprite-position.less',
+				imgPath: '../img/sprite.png',
+				cssFormat: 'less',
+				cssTemplate: 'template.mustache',
 				cssVarMap: function(sprite) {
-						sprite.name = 's-' + sprite.name //имя каждого спрайта будет состоять из имени файла и конструкции 's-' в начале имени
+						sprite.name = 's-' + sprite.name
 					}
 				}));
 		spriteData.img
@@ -194,24 +221,26 @@ gulp.task('webserver', function () {
 
 // WATCH
 gulp.task('watch', ['webserver'],function() {
-	gulp.watch(path.watch.styles, ['less']);
+	gulp.watch(path.watch.less, ['less']);
 	gulp.watch(path.watch.jade, ['jade']);
-	gulp.watch(path.watch.img, ['images']);
+	gulp.watch(path.watch.img, ['img']);
 	gulp.watch(path.watch.pngSprite, ['png-sprite']);
 	gulp.watch(path.watch.js, ['js']);
 	gulp.watch(path.watch.fonts, ['fonts']);
+	gulp.watch(path.watch.svgSprite, ['svg-sprite','jade']);
 });
 
 // BUILD
 gulp.task('build', function(callback) {
 	runSequence(
 		'clean',
-		['js',
-		'png-sprite',
+		'svg-sprite',
 		'img',
+		['js',
+		'jade',
+		'png-sprite',
 		'fonts',
-		'less',
-		'jade'],
+		'less'],
 		callback)
 });
 
