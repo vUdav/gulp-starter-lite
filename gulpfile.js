@@ -11,7 +11,7 @@ var gulp = require('gulp'),
 		reload = browserSync.reload,
 		plumber = require('gulp-plumber'),
 		prettify = require('gulp-prettify'),
-		jade = require('gulp-jade'),
+		pug = require('gulp-pug'),
 		imagemin = require('gulp-imagemin'),
 		pngquant = require('imagemin-pngquant'),
 		jpegoptim = require('imagemin-jpegoptim'),
@@ -31,7 +31,7 @@ var gulp = require('gulp'),
 var path = {
 	src: {
 		less: 'src/less/style.less',
-		jade: 'src/jade/**/[^_]*.jade',
+		pug: 'src/pug/**/[^_]*.pug',
 		img: ['src/img/**/*.*', '!src/img/sprite/*.*'],
 		pngSprite: 'src/img/sprite/**/*.png',
 		js: 'src/js/**/*.js',
@@ -51,7 +51,7 @@ var path = {
 	},
 	watch: {
 		less: 'src/less/**/*.less',
-		jade: 'src/jade/**/*.jade',
+		pug: 'src/pug/**/*.pug',
 		img: ['src/img/**/*.*', '!src/img/sprite/*.*'],
 		pngSprite: 'src/img/sprite/**/*.png',
 		js: 'src/js/**/*.*',
@@ -110,18 +110,18 @@ gulp.task('less', function () {
 		.pipe(reload({stream: true}));
 });
 
-// JADE
-gulp.task('jade', function() {
-	return gulp.src(path.src.jade)
+// PUG
+gulp.task('pug', function() {
+	return gulp.src(path.src.pug)
 		.pipe(plumber(function(error) {
 			gutil.log(gutil.colors.red(error.message));
 			this.emit('end');
 		}))
-		.pipe(jade({
+		.pipe(pug({
 			pretty: true
 		}))
 		.pipe(prettify({indent_size: 2}))
-		.pipe(cached('jade'))
+		.pipe(cached('pug'))
 		.pipe(gulp.dest(path.build.html))
 		.pipe(reload({stream: true}));
 });
@@ -222,12 +222,12 @@ gulp.task('webserver', function () {
 // WATCH
 gulp.task('watch', ['webserver'],function() {
 	gulp.watch(path.watch.less, ['less']);
-	gulp.watch(path.watch.jade, ['jade']);
+	gulp.watch(path.watch.pug, ['pug']);
 	gulp.watch(path.watch.img, ['img']);
 	gulp.watch(path.watch.pngSprite, ['png-sprite']);
 	gulp.watch(path.watch.js, ['js']);
 	gulp.watch(path.watch.fonts, ['fonts']);
-	gulp.watch(path.watch.svgSprite, ['svg-sprite','jade']);
+	gulp.watch(path.watch.svgSprite, ['svg-sprite','pug']);
 });
 
 // BUILD
@@ -237,7 +237,7 @@ gulp.task('build', function(callback) {
 		'svg-sprite',
 		'img',
 		['js',
-		'jade',
+		'pug',
 		'png-sprite',
 		'fonts',
 		'less'],

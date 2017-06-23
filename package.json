@@ -14,7 +14,7 @@
 	"gulp-filter": "latest",
 	"gulp-flatten": "latest",
 	"gulp-imagemin": "latest",
-	"gulp-jade": "latest",
+	"gulp-pug": "latest",
 	"gulp-less": "latest",
 	"gulp-plumber": "latest",
 	"gulp-prettify": "latest",
